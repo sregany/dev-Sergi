@@ -1,187 +1,156 @@
 "use client";
 
-import React, { useState, useRef, useEffect } from "react";
+import React, { useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { MessageSquare, X, Send, Bot, User, Sparkles } from "lucide-react";
-
-interface ChatMessage {
-  id: string;
-  role: "user" | "assistant";
-  content: string;
-}
+import { Send, X, Bot, User, Sparkles, MessageSquare } from "lucide-react";
+import { useChat } from "@ai-sdk/react";
 
 const ChatAgent = () => {
-  const [isOpen, setIsOpen] = useState(false);
-  const [userInput, setUserInput] = useState("");
-  const [messages, setMessages] = useState<ChatMessage[]>([
-    {
-      id: "1",
-      role: "assistant",
-      content: "Hello! I'm Sergi's AI assistant. Ask me anything about his projects, skills, or how to get in touch!",
-    },
-  ]);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isOpen, setIsOpen] = React.useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
+
+  const { messages, input, handleInputChange, handleSubmit, isLoading, error } = useChat({
+    api: "/api/chat",
+    initialMessages: [
+      {
+        id: "1",
+        role: "assistant",
+        content: "¡Hola! Soy el asistente de Sergi. Me encantaría contarte más sobre sus proyectos en IA, su formación en matemáticas o cómo puede ayudar a tu equipo. ¿Qué te gustaría saber?",
+      },
+    ],
+  });
 
   useEffect(() => {
     if (scrollRef.current) {
       scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
     }
-  }, [messages, isLoading]);
-
-  const handleSend = async () => {
-    if (!userInput.trim() || isLoading) return;
-
-    const userMsg: ChatMessage = {
-      id: Date.now().toString(),
-      role: "user",
-      content: userInput,
-    };
-
-    setMessages((prev) => [...prev, userMsg]);
-    setUserInput("");
-    setIsLoading(true);
-
-    try {
-      const response = await fetch("/api/chat", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ messages: [...messages, userMsg] }),
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.error || "Error en la respuesta");
-      }
-
-      setMessages((prev) => [
-        ...prev,
-        {
-          id: `asst-${Date.now()}`,
-          role: "assistant",
-          content: data.text,
-        },
-      ]);
-    } catch (error: any) {
-      console.error("Chat Error:", error);
-      setMessages((prev) => [
-        ...prev,
-        {
-          id: `err-${Date.now()}`,
-          role: "assistant",
-          content: "⚠️ Error: " + error.message,
-        },
-      ]);
-    } finally {
-      setIsLoading(false);
-    }
-  };
+  }, [messages]);
 
   return (
     <>
-      {/* Floating Toggle Button */}
-      <button
-        onClick={() => setIsOpen(!isOpen)}
-        className="fixed bottom-6 right-6 w-14 h-14 bg-brand-cyan text-bg-dark rounded-full shadow-lg flex items-center justify-center z-50 hover:scale-110 active:scale-95 transition-all group"
+      {/* Floating Button */}
+      <motion.button
+        initial={{ scale: 0, opacity: 0 }}
+        animate={{ scale: 1, opacity: 1 }}
+        whileHover={{ scale: 1.1 }}
+        whileTap={{ scale: 0.9 }}
+        onClick={() => setIsOpen(true)}
+        className="fixed bottom-6 right-6 w-16 h-16 bg-brand-cyan text-black rounded-full shadow-2xl flex items-center justify-center z-[150] cursor-pointer group"
       >
-        <AnimatePresence mode="wait">
-          {isOpen ? (
-            <motion.div key="close" initial={{ rotate: -90, opacity: 0 }} animate={{ rotate: 0, opacity: 1 }} exit={{ rotate: 90, opacity: 0 }}>
-              <X size={24} />
-            </motion.div>
-          ) : (
-            <motion.div key="open" initial={{ rotate: 90, opacity: 0 }} animate={{ rotate: 0, opacity: 1 }} exit={{ rotate: -90, opacity: 0 }}>
-              <MessageSquare size={24} />
-            </motion.div>
-          )}
-        </AnimatePresence>
-      </button>
+        <MessageSquare className="w-7 h-7 group-hover:rotate-12 transition-transform" />
+        <div className="absolute -top-1 -right-1 w-4 h-4 bg-white rounded-full animate-ping opacity-20" />
+      </motion.button>
 
       {/* Chat Window */}
       <AnimatePresence>
         {isOpen && (
           <motion.div
-            initial={{ opacity: 0, y: 20, scale: 0.95 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: 20, scale: 0.95 }}
-            className="fixed bottom-24 right-6 w-[calc(100vw-48px)] sm:w-96 h-[500px] bg-[#0A0A0B]/95 backdrop-blur-xl border border-white/10 rounded-2xl shadow-2xl flex flex-col z-50 overflow-hidden"
+            initial={{ opacity: 0, y: 100, scale: 0.9, x: 50 }}
+            animate={{ opacity: 1, y: 0, scale: 1, x: 0 }}
+            exit={{ opacity: 0, y: 100, scale: 0.9, x: 50 }}
+            className="fixed bottom-24 right-6 w-[90vw] sm:w-[400px] h-[600px] bg-black/90 backdrop-blur-2xl border border-white/10 rounded-3xl shadow-2xl z-[160] flex flex-col overflow-hidden"
           >
             {/* Header */}
-            <div className="p-4 border-b border-white/5 bg-white/5 flex items-center justify-between">
+            <div className="p-6 border-b border-white/10 flex justify-between items-center bg-white/5">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-brand-cyan/20 flex items-center justify-center border border-brand-cyan/30">
-                  <Bot size={20} className="text-brand-cyan" />
+                <div className="w-10 h-10 rounded-full bg-brand-cyan/20 flex items-center justify-center border border-brand-cyan/30">
+                  <Bot className="text-brand-cyan w-6 h-6" />
                 </div>
                 <div>
-                  <h3 className="font-display font-bold text-sm tracking-widest text-white">SR_AGENT</h3>
+                  <h3 className="text-white font-bold text-sm">Sergi AI Assistant</h3>
                   <div className="flex items-center gap-1.5">
-                    <div className="w-2 h-2 rounded-full bg-[#00FF85] animate-pulse" />
-                    <span className="text-[10px] text-white/40 uppercase font-mono">Personal AI Assistant</span>
+                    <div className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />
+                    <span className="text-[10px] text-white/40 uppercase tracking-widest font-bold">Online</span>
                   </div>
                 </div>
               </div>
-              <Sparkles size={16} className="text-brand-cyan/40 shadow-sm" />
+              <button 
+                onClick={() => setIsOpen(false)}
+                className="p-2 hover:bg-white/10 rounded-full transition-colors text-white/40 hover:text-white"
+              >
+                <X className="w-5 h-5" />
+              </button>
             </div>
 
             {/* Messages Area */}
-            <div ref={scrollRef} className="flex-1 overflow-y-auto p-4 space-y-6 scrollbar-hide">
-              {messages.map((message) => (
-                <div key={message.id} className={`flex ${message.role === "user" ? "justify-end" : "justify-start"}`}>
-                  <div className={`flex gap-3 max-w-[85%] ${message.role === "user" ? "flex-row-reverse" : ""}`}>
-                    <div className={`w-8 h-8 rounded-lg flex-shrink-0 flex items-center justify-center border ${
-                      message.role === "user" ? "bg-brand-purple/20 border-brand-purple/40" : "bg-brand-cyan/20 border-brand-cyan/40"
+            <div 
+              ref={scrollRef}
+              className="flex-1 overflow-y-auto p-6 space-y-6 scroll-smooth"
+            >
+              {messages.map((m) => (
+                <motion.div
+                  key={m.id}
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className={`flex ${m.role === "user" ? "justify-end" : "justify-start"}`}
+                >
+                  <div className={`flex gap-3 max-w-[85%] ${m.role === "user" ? "flex-row-reverse" : "flex-row"}`}>
+                    <div className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 border ${
+                      m.role === "user" 
+                        ? "bg-white/10 border-white/20" 
+                        : "bg-brand-cyan/10 border-brand-cyan/20"
                     }`}>
-                      {message.role === "user" ? <User size={16} className="text-brand-purple" /> : <Bot size={16} className="text-brand-cyan" />}
+                      {m.role === "user" ? <User className="w-4 h-4 text-white/60" /> : <Sparkles className="w-4 h-4 text-brand-cyan" />}
                     </div>
-                    <div className={`p-3.5 rounded-2xl text-[13px] leading-relaxed shadow-lg ${
-                      message.role === "user" 
-                        ? "bg-brand-purple/10 border border-brand-purple/20 text-white rounded-tr-none" 
-                        : "bg-white/5 border border-white/10 text-white/90 rounded-tl-none whitespace-pre-wrap"
+                    <div className={`p-4 rounded-2xl text-xs leading-relaxed ${
+                      m.role === "user"
+                        ? "bg-brand-cyan text-black font-medium"
+                        : "bg-white/5 text-white/80 border border-white/10"
                     }`}>
-                      {message.content}
+                      {m.content}
+                    </div>
+                  </div>
+                </motion.div>
+              ))}
+              {isLoading && (
+                <div className="flex justify-start animate-pulse">
+                  <div className="flex gap-3 max-w-[80%]">
+                    <div className="w-8 h-8 rounded-full bg-brand-cyan/10 border border-brand-cyan/20 flex items-center justify-center">
+                      <Bot className="w-4 h-4 text-brand-cyan" />
+                    </div>
+                    <div className="p-4 rounded-2xl bg-white/5 text-brand-cyan text-[10px] font-bold tracking-widest flex items-center gap-2 uppercase">
+                      <div className="flex gap-1">
+                        <div className="w-1 h-1 bg-brand-cyan rounded-full animate-bounce" />
+                        <div className="w-1 h-1 bg-brand-cyan rounded-full animate-bounce [animation-delay:0.2s]" />
+                        <div className="w-1 h-1 bg-brand-cyan rounded-full animate-bounce [animation-delay:0.4s]" />
+                      </div>
+                      Pensando
                     </div>
                   </div>
                 </div>
-              ))}
-              {isLoading && (
-                <div className="flex gap-3">
-                  <div className="w-8 h-8 rounded-lg bg-brand-cyan/20 border border-brand-cyan/40 flex items-center justify-center">
-                    <Bot size={16} className="text-brand-cyan" />
-                  </div>
-                  <div className="p-3.5 rounded-2xl bg-white/5 border border-white/10 text-white/40 text-[10px] uppercase font-mono tracking-widest flex items-center gap-2">
-                    <span>GENERATING</span>
-                    <span className="flex gap-0.5">
-                      <span className="animate-bounce" style={{ animationDelay: "0s" }}>.</span>
-                      <span className="animate-bounce" style={{ animationDelay: "0.2s" }}>.</span>
-                      <span className="animate-bounce" style={{ animationDelay: "0.4s" }}>.</span>
-                    </span>
-                  </div>
+              )}
+              {error && (
+                <div className="text-center p-4 bg-red-500/10 border border-red-500/20 rounded-xl text-red-400 text-[10px] uppercase tracking-wider font-bold">
+                  Error de conexión. Prueba de nuevo.
                 </div>
               )}
             </div>
 
             {/* Input Area */}
-            <div className="p-4 bg-white/5 border-t border-white/5">
-              <div className="relative group">
+            <form 
+              onSubmit={handleSubmit}
+              className="p-6 bg-white/5 border-t border-white/10"
+            >
+              <div className="relative">
                 <input
                   type="text"
-                  value={userInput}
-                  onChange={(e) => setUserInput(e.target.value)}
-                  onKeyDown={(e) => e.key === "Enter" && handleSend()}
-                  placeholder="Ask me something..."
-                  disabled={isLoading}
-                  className="w-full bg-black/40 border border-white/10 rounded-xl px-5 py-3.5 text-xs text-white placeholder:text-white/20 focus:outline-none focus:border-brand-cyan/50 transition-all font-mono"
+                  value={input || ""}
+                  onChange={handleInputChange}
+                  placeholder="Pregunta sobre Sergi..."
+                  className="w-full bg-white/5 border border-white/10 rounded-2xl py-4 pl-6 pr-14 text-xs text-white placeholder:text-white/20 focus:outline-none focus:border-brand-cyan/50 transition-all"
                 />
                 <button
-                  onClick={handleSend}
-                  disabled={isLoading}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 p-2 text-white/40 hover:text-brand-cyan transition-colors disabled:opacity-50"
+                  type="submit"
+                  disabled={isLoading || !(input || "").trim()}
+                  className="absolute right-2 top-1/2 -translate-y-1/2 p-2.5 bg-brand-cyan text-black rounded-xl hover:scale-105 active:scale-95 disabled:opacity-50 disabled:hover:scale-100 transition-all cursor-pointer"
                 >
-                  <Send size={16} />
+                  <Send className="w-4 h-4" />
                 </button>
               </div>
-            </div>
+              <p className="mt-3 text-center text-[9px] text-white/20 uppercase tracking-[0.2em] font-bold">
+                Powered by Sergi AI Core
+              </p>
+            </form>
           </motion.div>
         )}
       </AnimatePresence>
