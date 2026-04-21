@@ -16,8 +16,6 @@ export async function POST(req: Request) {
       chatHistory = [{ role: "user", parts: [{ text: "Hola" }] }, ...chatHistory];
     }
 
-    // Usamos el endpoint oficial de STREAMING de Google
-    // Esto es lo que permite que el texto aparezca poco a poco
     const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:streamGenerateContent?alt=sse&key=${apiKey}`;
 
     const response = await fetch(url, {
@@ -37,7 +35,6 @@ export async function POST(req: Request) {
       throw new Error(errorData.error?.message || "Error en Google API");
     }
 
-    // TRANSFORMADOR DE STREAM: Convertimos el formato de Google al formato que espera el frontend (Vercel AI SDK)
     const encoder = new TextEncoder();
     const decoder = new TextDecoder();
 
@@ -64,12 +61,9 @@ export async function POST(req: Request) {
                 const json = JSON.parse(line.replace("data: ", ""));
                 const text = json.candidates[0].content.parts[0].text;
                 if (text) {
-                  // Enviamos el texto en el formato '0:"texto"' que usa el SDK de Vercel
                   controller.enqueue(encoder.encode(`0:${JSON.stringify(text)}\n`));
                 }
-              } catch (e) {
-                // Fragmento JSON incompleto, seguimos
-              }
+              } catch (e) {}
             }
           }
         }
