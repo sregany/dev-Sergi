@@ -38,9 +38,9 @@ const Hero = () => {
         </div>
         
         <div className="hidden lg:flex items-center gap-10 text-[9px] uppercase tracking-[0.4em] font-bold text-white/30">
-          <a href="#projects" className="hover:text-brand-cyan transition-all hover:tracking-[0.6em] cursor-pointer">Projects</a>
           <a href="#about" className="hover:text-brand-cyan transition-all hover:tracking-[0.6em] cursor-pointer">Abilities</a>
           <a href="#stack" className="hover:text-brand-cyan transition-all hover:tracking-[0.6em] cursor-pointer">Stack</a>
+          <a href="#projects" className="hover:text-brand-cyan transition-all hover:tracking-[0.6em] cursor-pointer">Projects</a>
           <a href="#contact" className="hover:text-brand-cyan transition-all hover:tracking-[0.6em] cursor-pointer">Contact</a>
         </div>
 
