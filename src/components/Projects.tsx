@@ -10,22 +10,8 @@ const nexusImages = [
   "/nexus-ai-2.png"
 ];
 
-const secondaryProjects = [
-  {
-    title: "Multi-Agent Automation",
-    category: "AI ORCHESTRATION",
-    desc: "Autonomous workflow system capable of coordinating multiple AI agents efficiently.",
-    tech: ["Python", "LangChain", "OpenAI"],
-    color: "from-brand-cyan/20 to-transparent",
-  },
-  {
-    title: "Sovereign Intel Framework",
-    category: "RESEARCH & CORE",
-    desc: "A framework for private, deterministic, and scalable AI intelligence for enterprise workloads.",
-    tech: ["TypeScript", "Next.js", "Neural Stack"],
-    color: "from-brand-purple/20 to-transparent",
-  }
-];
+// Solo Nexus AI por ahora para máximo impacto
+const secondaryProjects: any[] = [];
 
 const Projects = () => {
   const [currentImg, setCurrentImg] = useState(0);
@@ -141,39 +127,7 @@ const Projects = () => {
           </div>
         </div>
 
-        {/* Secondary Projects Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
-          {secondaryProjects.map((project, idx) => (
-            <motion.div
-              key={idx}
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: idx * 0.1 }}
-              className="group relative glass p-6 md:p-10 rounded-2xl md:rounded-[2.5rem] border-white/5 hover:border-brand-cyan/30 transition-all flex flex-col"
-            >
-              <div className="flex justify-between items-start mb-8 md:mb-12">
-                <span className="text-[9px] md:text-[10px] font-mono text-white/30 tracking-[0.2em] md:tracking-[0.3em] uppercase">{project.category}</span>
-                <div className="w-8 h-8 md:w-10 md:h-10 border border-white/10 rounded-full flex items-center justify-center group-hover:border-brand-cyan transition-colors">
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="text-white/20 group-hover:text-brand-cyan"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg>
-                </div>
-              </div>
-              
-              <h3 className="text-2xl md:text-3xl font-display font-bold mb-4 md:mb-6 group-hover:text-brand-cyan transition-colors uppercase tracking-tight">{project.title}</h3>
-              <p className="text-white/40 text-xs md:text-sm leading-relaxed mb-6 md:mb-8 flex-1">
-                {project.desc}
-              </p>
-
-              <div className="flex flex-wrap gap-2">
-                {project.tech.map((t, i) => (
-                  <span key={i} className="text-[9px] font-mono text-white/20 bg-white/5 border border-white/5 px-2 py-0.5 rounded">
-                    {t}
-                  </span>
-                ))}
-              </div>
-            </motion.div>
-          ))}
-        </div>
+        {/* Los proyectos secundarios han sido eliminados por petición del usuario */}
       </div>
     </section>
   );
