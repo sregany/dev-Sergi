@@ -25,7 +25,6 @@ export default function ChatAgent() {
   const scrollRef = useRef<HTMLDivElement>(null);
   const hasGreeted = useRef(false);
 
-  // Saludo automático a los 3 segundos
   useEffect(() => {
     if (hasGreeted.current) return;
     const t = setTimeout(() => {
@@ -35,14 +34,12 @@ export default function ChatAgent() {
     return () => clearTimeout(t);
   }, []);
 
-  // Auto-scroll
   useEffect(() => {
     if (scrollRef.current) {
       scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
     }
   }, [messages]);
 
-  // Enviar mensaje y leer el stream
   const sendMessage = useCallback(
     async (text: string) => {
       const userMsg: Message = {
@@ -55,7 +52,6 @@ export default function ChatAgent() {
       setMessages(nextMessages);
       setIsLoading(true);
 
-      // Placeholder para la respuesta del asistente
       const assistantId = (Date.now() + 1).toString();
       setMessages((prev) => [
         ...prev,
@@ -74,7 +70,17 @@ export default function ChatAgent() {
           }),
         });
 
-        if (!res.ok) throw new Error("Error del servidor");
+        // Manejo específico de la respuesta
+        const contentType = res.headers.get("content-type");
+        
+        if (!res.ok) {
+          // Si el servidor envía un JSON con error (como el 503 de cuota agotada)
+          if (contentType?.includes("application/json")) {
+            const errorData = await res.json();
+            throw new Error(errorData.error || "Error del servidor");
+          }
+          throw new Error("Error de conexión");
+        }
 
         const reader = res.body?.getReader();
         const decoder = new TextDecoder();
@@ -91,7 +97,6 @@ export default function ChatAgent() {
           buffer = lines.pop() || "";
 
           for (const line of lines) {
-            // Formato del stream: 0:"texto"
             if (line.startsWith('0:"') || line.startsWith("0:\"")) {
               try {
                 const parsed = JSON.parse(line.slice(2));
@@ -103,16 +108,21 @@ export default function ChatAgent() {
                   )
                 );
               } catch {
-                // fragmento incompleto, lo ignoramos
+                // fragmento incompleto
               }
             }
           }
         }
-      } catch (err) {
+      } catch (err: any) {
         setMessages((prev) =>
           prev.map((m) =>
             m.id === assistantId
-              ? { ...m, content: "Lo siento, ha habido un error. Inténtalo de nuevo." }
+              ? { 
+                  ...m, 
+                  content: err.message.includes("saturados") 
+                    ? "¡Vaya! He hablado demasiado por hoy y Google ha limitado mis respuestas. Por favor, inténtalo de nuevo en unos minutos o contáctame directamente en sergiregany1996@gmail.com."
+                    : "Lo siento, ha habido un problema técnico. ¿Podrías repetirlo?" 
+                }
               : m
           )
         );
@@ -133,7 +143,6 @@ export default function ChatAgent() {
 
   return (
     <>
-      {/* Botón flotante */}
       <motion.button
         initial={{ scale: 0 }}
         animate={{ scale: 1 }}
@@ -148,16 +157,14 @@ export default function ChatAgent() {
         )}
       </motion.button>
 
-      {/* Ventana del chat */}
       <AnimatePresence>
         {isOpen && (
           <motion.div
             initial={{ opacity: 0, y: 100, scale: 0.9 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 100, scale: 0.9 }}
-            className="fixed bottom-24 right-6 w-[90vw] sm:w-[400px] h-[600px] bg-black/95 backdrop-blur-2xl border border-white/10 rounded-3xl shadow-2xl z-[160] flex flex-col overflow-hidden"
+            className="fixed bottom-24 right-6 w-[90vw] sm:w-[420px] h-[600px] bg-black/90 backdrop-blur-2xl border border-white/10 rounded-3xl shadow-2xl z-[160] flex flex-col overflow-hidden"
           >
-            {/* Header */}
             <div className="p-6 border-b border-white/10 flex justify-between items-center bg-white/5">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-full bg-brand-cyan/20 flex items-center justify-center border border-brand-cyan/30">
@@ -181,8 +188,7 @@ export default function ChatAgent() {
               </button>
             </div>
 
-            {/* Mensajes */}
-            <div ref={scrollRef} className="flex-1 overflow-y-auto p-6 space-y-6">
+            <div ref={scrollRef} className="flex-1 overflow-y-auto p-6 space-y-6 scroll-smooth">
               {messages.map((m) => (
                 <motion.div
                   key={m.id}
@@ -190,31 +196,11 @@ export default function ChatAgent() {
                   animate={{ opacity: 1, y: 0 }}
                   className={`flex ${m.role === "user" ? "justify-end" : "justify-start"}`}
                 >
-                  <div
-                    className={`flex gap-3 max-w-[85%] ${
-                      m.role === "user" ? "flex-row-reverse" : "flex-row"
-                    }`}
-                  >
-                    <div
-                      className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 border ${
-                        m.role === "user"
-                          ? "bg-white/10 border-white/20"
-                          : "bg-brand-cyan/10 border-brand-cyan/20"
-                      }`}
-                    >
-                      {m.role === "user" ? (
-                        <span className="text-[11px] text-white/60 font-bold">TÚ</span>
-                      ) : (
-                        <Sparkles className="w-4 h-4 text-brand-cyan" />
-                      )}
+                  <div className={`flex gap-3 max-w-[85%] ${m.role === "user" ? "flex-row-reverse" : "flex-row"}`}>
+                    <div className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 border ${m.role === "user" ? "bg-white/10 border-white/20" : "bg-brand-cyan/10 border-brand-cyan/20"}`}>
+                      {m.role === "user" ? <span className="text-[11px] text-white/60 font-bold uppercase">Tú</span> : <Sparkles className="w-4 h-4 text-brand-cyan" />}
                     </div>
-                    <div
-                      className={`p-4 rounded-2xl text-xs leading-relaxed ${
-                        m.role === "user"
-                          ? "bg-brand-cyan text-black font-medium"
-                          : "bg-white/5 text-white/80 border border-white/10"
-                      }`}
-                    >
+                    <div className={`p-4 rounded-2xl text-xs leading-relaxed ${m.role === "user" ? "bg-brand-cyan text-black font-medium" : "bg-white/5 text-white/80 border border-white/10"}`}>
                       {m.content}
                     </div>
                   </div>
@@ -227,12 +213,11 @@ export default function ChatAgent() {
                     <span className="w-1 h-1 rounded-full bg-brand-cyan animate-bounce [animation-delay:-0.15s]" />
                     <span className="w-1 h-1 rounded-full bg-brand-cyan animate-bounce" />
                   </span>
-                  Escribiendo
+                  PROCESANDO
                 </div>
               )}
             </div>
 
-            {/* Input */}
             <form onSubmit={handleSubmit} className="p-6 bg-white/5 border-t border-white/10">
               <div className="relative">
                 <input
@@ -240,12 +225,12 @@ export default function ChatAgent() {
                   value={input}
                   onChange={(e) => setInput(e.target.value)}
                   placeholder="Pregunta sobre Sergi..."
-                  className="w-full bg-white/5 border border-white/10 rounded-2xl py-4 pl-6 pr-14 text-xs text-white placeholder:text-white/20 focus:outline-none focus:border-brand-cyan/40 transition-colors"
+                  className="w-full bg-white/5 border border-white/10 rounded-2xl py-4 pl-6 pr-14 text-xs text-white focus:outline-none"
                 />
                 <button
                   type="submit"
                   disabled={isLoading || !input.trim()}
-                  className="absolute right-2 top-1/2 -translate-y-1/2 p-2.5 bg-brand-cyan text-black rounded-xl cursor-pointer disabled:opacity-30 hover:scale-105 active:scale-95 transition-all"
+                  className="absolute right-2 top-1/2 -translate-y-1/2 p-2.5 bg-brand-cyan text-black rounded-xl cursor-pointer disabled:opacity-30 transition-all shadow-[0_0_15px_rgba(0,242,254,0.3)]"
                 >
                   <Send className="w-4 h-4" />
                 </button>
