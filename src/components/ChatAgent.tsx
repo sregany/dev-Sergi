@@ -20,6 +20,9 @@ const ChatAgent = () => {
     ],
   });
 
+  // Garantizamos que input nunca sea undefined interna o externamente
+  const safeInput = input || "";
+
   useEffect(() => {
     if (scrollRef.current) {
       scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
@@ -134,14 +137,14 @@ const ChatAgent = () => {
               <div className="relative">
                 <input
                   type="text"
-                  value={input || ""}
+                  value={safeInput}
                   onChange={handleInputChange}
                   placeholder="Pregunta sobre Sergi..."
                   className="w-full bg-white/5 border border-white/10 rounded-2xl py-4 pl-6 pr-14 text-xs text-white placeholder:text-white/20 focus:outline-none focus:border-brand-cyan/50 transition-all"
                 />
                 <button
                   type="submit"
-                  disabled={isLoading || !(input || "").trim()}
+                  disabled={isLoading || !safeInput.trim()}
                   className="absolute right-2 top-1/2 -translate-y-1/2 p-2.5 bg-brand-cyan text-black rounded-xl hover:scale-105 active:scale-95 disabled:opacity-50 disabled:hover:scale-100 transition-all cursor-pointer"
                 >
                   <Send className="w-4 h-4" />
