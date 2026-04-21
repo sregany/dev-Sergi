@@ -1,0 +1,171 @@
+{
+  "tasks": [
+    {
+      "id": 1,
+      "title": "Configurar Design System y Layout Base",
+      "description": "Configurar Tailwind, fuentes (Inter/Space Grotesk), colores (Cyan/Purple/Dark) y el Layout principal con el tema cyberpunk.",
+      "status": "COMPLETED",
+      "priority": "CRITICAL",
+      "plan_approved": false,
+      "assigned_to": "Arquitecto",
+      "dependencies": [],
+      "created_at": "2026-04-21T00:13:14.770657",
+      "started_at": "2026-04-21T00:13:19.884593",
+      "completed_at": "2026-04-21T00:13:52.161404",
+      "review_cycles": 1,
+      "rejection_reason": null,
+      "retries": 0,
+      "completion_summary": "Configurado el sistema de diseño con Tailwind 4, fuentes Space Grotesk/Inter y Layout base oscuro con acentos Cyan.",
+      "approved_at": "2026-04-21T00:19:34.962295",
+      "review_notes": "Layout base y diseño configurados correctamente."
+    },
+    {
+      "id": 2,
+      "title": "Seccion Hero con Efecto Glow",
+      "description": "Implementar el hero con el fondo brillante, el titulo y la navegacion.",
+      "status": "COMPLETED",
+      "priority": "HIGH",
+      "plan_approved": false,
+      "assigned_to": "Frontend",
+      "dependencies": [
+        1
+      ],
+      "created_at": "2026-04-21T00:13:14.857717",
+      "started_at": null,
+      "completed_at": "2026-04-21T00:14:23.171665",
+      "review_cycles": 1,
+      "rejection_reason": null,
+      "retries": 0,
+      "completion_summary": "Implementada la seccion Hero con efecto glow, tipografia de alta gama y navegacion superior.",
+      "approved_at": "2026-04-21T00:19:35.050477",
+      "review_notes": "Hero section implementada con exito."
+    },
+    {
+      "id": 3,
+      "title": "Seccion Terminal y About",
+      "description": "Implementar el bloque de codigo terminal y el texto descriptivo.",
+      "status": "COMPLETED",
+      "priority": "HIGH",
+      "plan_approved": false,
+      "assigned_to": "Frontend",
+      "dependencies": [
+        1
+      ],
+      "created_at": "2026-04-21T00:13:14.944288",
+      "started_at": null,
+      "completed_at": "2026-04-21T00:14:40.579754",
+      "review_cycles": 1,
+      "rejection_reason": null,
+      "retries": 0,
+      "completion_summary": "Implementada la seccion About con una terminal de codigo estilizada y texto descriptivo de alto impacto.",
+      "approved_at": "2026-04-21T00:19:35.137457",
+      "review_notes": "About section con terminal lista."
+    },
+    {
+      "id": 4,
+      "title": "Seccion Tech Stack Grid",
+      "description": "Grid de tecnologias con barras de progreso y iconos.",
+      "status": "COMPLETED",
+      "priority": "MEDIUM",
+      "plan_approved": false,
+      "assigned_to": "Frontend",
+      "dependencies": [
+        1
+      ],
+      "created_at": "2026-04-21T00:13:15.043506",
+      "started_at": null,
+      "completed_at": "2026-04-21T00:15:01.944580",
+      "review_cycles": 1,
+      "rejection_reason": null,
+      "retries": 0,
+      "completion_summary": "Implementada la cuadricula de Stack Tecnologico con tarjetas glassmorphism y barras de progreso animadas.",
+      "approved_at": "2026-04-21T00:19:35.225468",
+      "review_notes": "Tech stack grid completado."
+    },
+    {
+      "id": 5,
+      "title": "Seccion Selected Works (Proyectos)",
+      "description": "Tarjetas de proyectos con imagenes descriptivas y acentos cyan.",
+      "status": "COMPLETED",
+      "priority": "HIGH",
+      "plan_approved": false,
+      "assigned_to": "Frontend",
+      "dependencies": [
+        1
+      ],
+      "created_at": "2026-04-21T00:13:15.139196",
+      "started_at": "2026-04-21T00:19:37.845423",
+      "completed_at": "2026-04-21T00:19:56.622711",
+      "review_cycles": 1,
+      "rejection_reason": null,
+      "retries": 0,
+      "completion_summary": "Implementada la seccion de Proyectos con tarjetas premium y diseno responsive.",
+      "approved_at": "2026-04-21T00:20:02.488917",
+      "review_notes": "Proyectos implementados correctamente."
+    },
+    {
+      "id": 6,
+      "title": "Seccion Evolution MAP (Timeline)",
+      "description": "Linea de tiempo vertical con hitos profesionales.",
+      "status": "COMPLETED",
+      "priority": "MEDIUM",
+      "plan_approved": false,
+      "assigned_to": "Frontend",
+      "dependencies": [
+        1
+      ],
+      "created_at": "2026-04-21T00:13:15.233446",
+      "started_at": "2026-04-21T00:19:56.741119",
+      "completed_at": "2026-04-21T00:20:28.598119",
+      "review_cycles": 1,
+      "rejection_reason": null,
+      "retries": 0,
+      "completion_summary": "Implementada la seccion de Evolution MAP con una linea de tiempo interactiva.",
+      "approved_at": "2026-04-21T00:20:34.060596",
+      "review_notes": "Evolution Map implementado."
+    },
+    {
+      "id": 7,
+      "title": "Seccion CTA y Footer",
+      "description": "Seccion final con botones de contacto y pie de pagina.",
+      "status": "COMPLETED",
+      "priority": "MEDIUM",
+      "plan_approved": false,
+      "assigned_to": "Frontend",
+      "dependencies": [
+        1
+      ],
+      "created_at": "2026-04-21T00:13:15.330038",
+      "started_at": "2026-04-21T00:20:28.679845",
+      "completed_at": "2026-04-21T00:20:52.062370",
+      "review_cycles": 1,
+      "rejection_reason": null,
+      "retries": 0,
+      "completion_summary": "Implementado el Footer y la seccion CTA final con un diseno premium.",
+      "approved_at": "2026-04-21T00:20:58.419628",
+      "review_notes": "Footer y CTA listos."
+    },
+    {
+      "id": 8,
+      "title": "Copywriting y Refinamiento SEO",
+      "description": "Revisar todos los textos para que suenen premium y optimizar meta tags.",
+      "status": "COMPLETED",
+      "priority": "MEDIUM",
+      "plan_approved": false,
+      "assigned_to": "Marketer",
+      "dependencies": [
+        1
+      ],
+      "created_at": "2026-04-21T00:13:15.423226",
+      "started_at": "2026-04-21T00:20:52.140946",
+      "completed_at": "2026-04-21T00:21:08.259928",
+      "review_cycles": 1,
+      "rejection_reason": null,
+      "retries": 0,
+      "completion_summary": "Refinado el copywriting y optimizado el SEO con metadatos avanzados.",
+      "approved_at": "2026-04-21T00:21:08.347932",
+      "review_notes": "Cierre de sprint."
+    }
+  ],
+  "next_id": 9
+}
