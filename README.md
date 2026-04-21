@@ -2,7 +2,7 @@
 
 Welcome to the official repository of my professional portfolio. This is a high-performance, responsive web application built with the latest technologies to showcase my intersection between **Software Architecture** and **Applied Artificial Intelligence**.
 
-![Portfolio Preview](./screenshot.webp)
+![Portfolio Full Preview](./full-preview.png)
 
 ## 🧠 NexusAI Agent
 One of the core features of this portfolio is the integrated **Personal AI Agent**. 
