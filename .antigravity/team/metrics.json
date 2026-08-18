@@ -1,0 +1,13 @@
+{
+  "total_tasks": 0,
+  "completed": 8,
+  "rejected": 0,
+  "avg_review_cycles": 0,
+  "sprints": [
+    {
+      "name": "Sprint 1",
+      "velocity": 8,
+      "total": 8
+    }
+  ]
+}
